@@ -10,15 +10,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-import teammates.common.datatransfer.attributes.CourseAttributes;
-import teammates.common.datatransfer.attributes.InstructorAttributes;
-import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.e2e.util.TestProperties;
+import teammates.storage.sqlentity.Course;
+import teammates.storage.sqlentity.Instructor;
+import teammates.storage.sqlentity.Student;
 
 /**
  * Page Object Model for student course details page.
  */
-public class StudentCourseDetailsPage extends AppPage {
+public class StudentCourseDetailsPageSql extends AppPage {
 
     @FindBy(id = "course-name")
     private WebElement courseNameField;
@@ -44,7 +44,7 @@ public class StudentCourseDetailsPage extends AppPage {
     @FindBy(id = "student-email")
     private WebElement studentEmailField;
 
-    public StudentCourseDetailsPage(Browser browser) {
+    public StudentCourseDetailsPageSql(Browser browser) {
         super(browser);
     }
 
@@ -53,23 +53,29 @@ public class StudentCourseDetailsPage extends AppPage {
         return waitForElementPresence(By.tagName("h1")).getText().matches("Team Details for .+");
     }
 
-    public void verifyCourseDetails(CourseAttributes courseDetails) {
+    public void verifyCourseDetails(Course courseDetails) {
         assertEquals(courseDetails.getName(), courseNameField.getText());
         assertEquals(courseDetails.getId(), courseIdField.getText());
         assertEquals(courseDetails.getInstitute(), courseInstituteField.getText());
     }
 
-
-    public void verifyInstructorsDetails(InstructorAttributes[] instructorDetails) {
+    public void verifyInstructorsDetails(Instructor[] instructorDetails) {
         String[] actualInstructors = instructorsList.getText().split(TestProperties.LINE_SEPARATOR);
         for (int i = 0; i < instructorDetails.length; i++) {
-            InstructorAttributes expected = instructorDetails[i];
-            assertEquals(expected.getDisplayedName() + ": " + expected.getName() + " (" + expected.getEmail() + ")",
+            Instructor expected = instructorDetails[i];
+            assertEquals(expected.getDisplayName() + ": " + expected.getName() + " (" + expected.getEmail() + ")",
                     actualInstructors[i]);
         }
     }
 
-    public void verifyTeammatesDetails(StudentAttributes[] teammates) {
+    public void verifyStudentDetails(Student studentDetails) {
+        assertEquals(studentDetails.getName(), studentNameField.getText());
+        assertEquals(studentDetails.getSectionName(), studentSectionField.getText());
+        assertEquals(studentDetails.getTeamName(), studentTeamField.getText());
+        assertEquals(studentDetails.getEmail(), studentEmailField.getText());
+    }
+
+    public void verifyTeammatesDetails(Student[] teammates) {
         int numTables = teammates.length;
 
         for (int i = 0; i < numTables; i++) {
