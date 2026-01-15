@@ -59,7 +59,6 @@ public class StudentCourseDetailsPage extends AppPage {
         assertEquals(courseDetails.getInstitute(), courseInstituteField.getText());
     }
 
-
     public void verifyInstructorsDetails(InstructorAttributes[] instructorDetails) {
         String[] actualInstructors = instructorsList.getText().split(TestProperties.LINE_SEPARATOR);
         for (int i = 0; i < instructorDetails.length; i++) {
@@ -67,6 +66,13 @@ public class StudentCourseDetailsPage extends AppPage {
             assertEquals(expected.getDisplayedName() + ": " + expected.getName() + " (" + expected.getEmail() + ")",
                     actualInstructors[i]);
         }
+    }
+
+    public void verifyStudentDetails(StudentAttributes studentDetails) {
+        assertEquals(studentDetails.getName(), studentNameField.getText());
+        assertEquals(studentDetails.getSection(), studentSectionField.getText());
+        assertEquals(studentDetails.getTeam(), studentTeamField.getText());
+        assertEquals(studentDetails.getEmail(), studentEmailField.getText());
     }
 
     public void verifyTeammatesDetails(StudentAttributes[] teammates) {
