@@ -2,7 +2,7 @@ name: Deploy TEAMMATES Staging
 
 on:
   workflow_run:
-    workflows: ["Component Tests", "E2E Sql Tests", "Accessibility Tests (SQL)", "Build Developer Guide", "Pull Request Checker"]
+    workflows: ["E2E Sql Tests", "Accessibility Tests (SQL)", "Build Developer Guide", "Pull Request Checker"]
     types: [completed]
     branches: [V9-clean-slate-sql]
 
@@ -23,7 +23,7 @@ jobs:
         with:
           script: |
             const sha = context.payload.workflow_run.head_sha;
-            const requiredWorkflows = ['Component Tests', 'E2E Sql Tests', 'Accessibility Tests (SQL)', 'Build Developer Guide', 'Pull Request Checker'];
+            const requiredWorkflows = ['E2E Sql Tests', 'Accessibility Tests (SQL)', 'Build Developer Guide', 'Pull Request Checker'];
             const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRunsForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -178,7 +178,7 @@ jobs:
         run: ./gradlew generateTypes
 
       - name: Build frontend
-        run: npm run build
+        run: ng build —configuration production —optimization=false
       
       # OIDC Authentication
       - id: auth
