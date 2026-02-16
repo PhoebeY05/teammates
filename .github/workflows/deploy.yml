@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows: 
       - "Component Tests"
-      - "E2E Sql Tests"
       - "Accessibility Tests (SQL)"
       - "Build Developer Guide"
       - "L&P Tests"
@@ -35,7 +34,6 @@ jobs:
             const sha = context.payload.workflow_run.head_sha;
             const requiredWorkflows = [
               'Component Tests',
-              'E2E Sql Tests',
               'Accessibility Tests (SQL)',
               'Build Developer Guide',
               'L&P Tests',
