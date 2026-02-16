@@ -191,7 +191,7 @@ jobs:
         run: ./gradlew generateTypes
 
       - name: Build frontend
-        run: ng build —configuration production —optimization=false
+        run: npm run build 
       
       # OIDC Authentication
       - id: auth
