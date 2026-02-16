@@ -55,7 +55,7 @@ jobs:
 
               if (runsForSha.length === 0) {
                 core.info(`Workflow "${name}" has no run for this SHA. Skipping workflow.`);
-                return;
+                continue;
               }
 
               const latest = runsForSha[0];
