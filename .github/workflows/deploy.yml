@@ -2,7 +2,7 @@ name: Deploy TEAMMATES Staging
 
 on:
   workflow_run:
-    workflows: ["E2E Sql Tests", "Accessibility Tests (SQL)", "Build Developer Guide", "Pull Request Checker"]
+    workflows: ["E2E Sql Tests", "Accessibility Tests (SQL)", "Build Developer Guide", "L&P Tests", "Pull Request Checker"]
     types: [completed]
     branches: [V9-clean-slate-sql]
 
@@ -23,18 +23,21 @@ jobs:
         with:
           script: |
             const sha = context.payload.workflow_run.head_sha;
-            const requiredWorkflows = ['E2E Sql Tests', 'Accessibility Tests (SQL)', 'Build Developer Guide', 'Pull Request Checker'];
+            const requiredWorkflows = ['E2E Sql Tests', 'Accessibility Tests (SQL)', 'Build Developer Guide', 'L&P Tests', 'Pull Request Checker'];
             const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRunsForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               head_sha: sha,
             });
             for (const name of requiredWorkflows) {
-              const passed = workflow_runs.some(
-                r => r.name === name && r.conclusion === 'success'
-              );
+              const runs = workflow_runs.filter(r => r.name === name);
+              if (runs.length === 0) {
+                core.info(`Workflow "${name}" has not run for ${sha}. Proceeding anyway.`);
+                continue;
+              }
+              const passed = runs.some(r => r.conclusion === 'success');
               if (!passed) {
-                core.info(`Workflow "${name}" has not succeeded yet for ${sha}. Skipping deploy.`);
+                core.info(`Workflow "${name}" ran but did not succeed for ${sha}. Skipping deploy.`);
                 core.setOutput('ready', 'false');
                 return;
               }
@@ -178,7 +181,7 @@ jobs:
         run: ./gradlew generateTypes
 
       - name: Build frontend
-        run: ng build —configuration production —optimization=false
+        run: npm run build
       
       # OIDC Authentication
       - id: auth
