@@ -401,6 +401,22 @@ appengineStage {
         dependsOn explodeWar, copyDistToExplodedWar
         finalizedBy removeWarFromStagedApp, copyExplodedWarToStagedApp
     }
+    doFirst {
+        def appYaml = file("src/main/appengine/app.yaml")
+        if (!appYaml.exists()) {
+            String instanceClass = System.getenv("INSTANCE_CLASS")
+            String vpcConnectorName = System.getenv("VPC_ACCESS_CONNECTOR_NAME")
+            String content = file("src/main/appengine/app.template.yaml").text
+            if (instanceClass) {
+                content = content.replaceAll(/instance_class: \S+/, "instance_class: ${instanceClass}")
+            }
+            if (vpcConnectorName) {
+                content = content.replaceAll(/#\s*vpc_access_connector:\s*\n#\s+name: \S+/,
+                        "vpc_access_connector:\n  name: ${vpcConnectorName}")
+            }
+            appYaml.text = content
+        }
+    }
 }
 
 // STATIC ANALYSIS TASKS
