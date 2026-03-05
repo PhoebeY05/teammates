@@ -4,6 +4,8 @@ on:
   push:
     branches: [V9-clean-slate-sql-staging-cd-test]
 
+  workflow_dispatch:
+
 permissions:
   contents: read
   id-token: write
