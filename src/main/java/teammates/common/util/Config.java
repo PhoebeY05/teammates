@@ -153,7 +153,6 @@ public final class Config {
 
         String appVersion = properties.getProperty("app.version");
         String appId = properties.getProperty("app.id");
-        IS_DEV_SERVER = isDevServer(appVersion, appId);
 
         Properties devProperties = new Properties();
 
@@ -168,6 +167,7 @@ public final class Config {
         properties = getBuildPropertiesFromGcpParameter(properties, appId);
         APP_ID = getGcpProjectId(properties.getProperty("app.id", appId));
         APP_VERSION = properties.getProperty("app.version", appVersion);
+        IS_DEV_SERVER = isDevServer(APP_VERSION, APP_ID);
 
         APP_REGION = getProperty(properties, devProperties, "app.region");
         APP_FRONTEND_URL = getProperty(properties, devProperties, "app.frontend.url", getDefaultFrontEndUrl());
